@@ -3,20 +3,11 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
+        <h3>Estadisticas / Resumen: </h3>
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
+            <div class="card" style="background-image: url('{{ asset('image/working.jpg') }}'); background-size: cover; background-position: center; height: 300px;">
             </div>
+            <h4>proximamente...</h4>
         </div>
     </div>
 </div>

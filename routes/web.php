@@ -11,7 +11,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::prefix('clients')->name('clients.')->group(function () {
     Route::get('/', [ClientController::class, 'index'])->name('index');

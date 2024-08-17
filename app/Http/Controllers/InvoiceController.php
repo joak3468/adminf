@@ -24,7 +24,8 @@ class InvoiceController extends Controller {
         ->when(isset($request->status), function($q) use ($enabled_statuses)  {
             return $q->whereIn("status", $enabled_statuses);
         })
-        ->get();
+        ->paginate(15)
+        ->appends($request->except('page'));
         return view('invoices.index', compact('invoices', 'date_from', 'date_to', 'enabled_statuses'));
     }
 

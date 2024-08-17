@@ -49,11 +49,13 @@
         <input type="text" id="searchInvoices" class="form-control" placeholder="Buscar por cliente">
     </div>
 
+<div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Estado</th>
                 <th>Cliente</th>
+                <th>Direccion</th>
                 <th>Precio</th>
                 <th>Fecha de creación</th>
                 <th>Fecha de pago</th>
@@ -67,6 +69,7 @@
             <tr>
                 <td>{{ $invoice->getNameStatus() }}</td>
                 <td>{{ $invoice->client->name }}</td>
+                <td>{{ $invoice->client->address }}</td>
                 <td>{{ $invoice->price }}</td>
                 <td>{{ date("Y-m-d", strtotime($invoice->created_at)) }}</td>
                 <td>{{ $invoice->payment_date ? : '-'  }}</td>
@@ -92,6 +95,8 @@
         </tbody>
     </table>
 </div>
+
+{{ $invoices->links('pagination::bootstrap-4') }}
 
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
     <div class="modal-dialog">

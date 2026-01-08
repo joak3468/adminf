@@ -1,7 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5">
+<style>
+    .invoices-page-wrapper {
+        position: relative;
+        min-height: 100vh;
+        background-image: url('https://images.unsplash.com/photo-1585842378054-ee8e30be8c80?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        padding: 20px 0;
+    }
+    .invoices-content {
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="invoices-page-wrapper">
+<div class="container mt-5 invoices-content">
     <h1 class="mb-4">Listado de Facturas</h1>
 
     <!-- Filtro de facturas -->
@@ -212,5 +233,8 @@ document.getElementById('confirmPayment').addEventListener('click', function () 
     document.getElementById('paymentForm').submit();
 });
 </component>
+
+</div>
+</div>
 
 @endsection

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h1 class="mb-4">Listado de Facturas</h1>
+    <h1 class="mb-4">Listado de Facturas asd</h1>
 
     <!-- Filtro de facturas -->
     <form method="GET" action="{{ route('invoices.index') }}" class="mb-4">

@@ -13,7 +13,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url('https://images.unsplash.com/photo-1585842378054-ee8e30be8c80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+        background-image: url('https://www.reddit.com/media?url=https%3A%2F%2Fpreview.redd.it%2Fanyone-else-curious-to-how-the-statue-of-liberty-moves-from-v0-1lhqms93bl191.jpg%3Fwidth%3D618%26format%3Dpjpg%26auto%3Dwebp%26s%3D17f48acefd8089f7380143177f607c308db70a13');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;

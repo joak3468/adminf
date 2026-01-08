@@ -15,18 +15,30 @@ class InvoiceController extends Controller {
     public function index(Request $request) {
         $date_from = $request->input('date_from', date("Y-m-d", strtotime("-1 month")));
         $date_to   = $request->input('date_to', date("Y-m-d"));
+        $client_search = $request->input('client_search', '');
         $enabled_statuses = isset($request->status) ? $request->status : [0,1,3];
         if(in_array(1, $enabled_statuses))
             $enabled_statuses[] = 2;
-        $invoices = Invoice::query()
-        ->orderBy('created_at', 'desc')
-        ->whereBetween('created_at', [$date_from, date("Y-m-d", strtotime("+1 day", strtotime($date_to)))])
-        ->when(isset($request->status), function($q) use ($enabled_statuses)  {
-            return $q->whereIn("status", $enabled_statuses);
-        })
-        ->paginate(15)
-        ->appends($request->except('page'));
-        return view('invoices.index', compact('invoices', 'date_from', 'date_to', 'enabled_statuses'));
+        
+        $query = Invoice::with('client')
+            ->orderBy('created_at', 'desc')
+            ->whereBetween('created_at', [$date_from, date("Y-m-d", strtotime("+1 day", strtotime($date_to)))])
+            ->whereIn("status", $enabled_statuses)
+            ->when($client_search, function($q) use ($client_search) {
+                return $q->whereHas('client', function($clientQuery) use ($client_search) {
+                    $clientQuery->where('name', 'like', '%' . $client_search . '%')
+                                ->orWhere('cuil', 'like', '%' . $client_search . '%');
+                });
+            });
+        
+        // Si hay búsqueda de cliente, devolver todos los resultados sin paginación
+        if ($client_search) {
+            $invoices = $query->get();
+        } else {
+            $invoices = $query->paginate(25)->appends($request->except('page'));
+        }
+        
+        return view('invoices.index', compact('invoices', 'date_from', 'date_to', 'enabled_statuses', 'client_search'));
     }
 
 

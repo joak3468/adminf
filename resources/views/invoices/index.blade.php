@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h1 class="mb-4">Listado de Facturas asd</h1>
+    <h1 class="mb-4">Listado de Facturas</h1>
 
     <!-- Filtro de facturas -->
     <form method="GET" action="{{ route('invoices.index') }}" class="mb-4">
@@ -45,9 +45,28 @@
         </div>
     </form>
 
-    <div class="mb-4">
-        <input type="text" id="searchInvoices" class="form-control" placeholder="Buscar por cliente">
-    </div>
+    <form method="GET" action="{{ route('invoices.index') }}" class="mb-4">
+        <div class="row">
+            <div class="col-md-8 mb-2">
+                <input type="text" name="client_search" id="client_search" class="form-control" placeholder="Buscar por nombre o CUIL del cliente" value="{{ $client_search ?? '' }}">
+                <input type="hidden" name="date_from" value="{{ $date_from }}">
+                <input type="hidden" name="date_to" value="{{ $date_to }}">
+                @if(isset(request()->status))
+                    @foreach(request()->status as $status)
+                        <input type="hidden" name="status[]" value="{{ $status }}">
+                    @endforeach
+                @endif
+            </div>
+            <div class="col-md-2 mb-2">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+            @if(isset($client_search) && $client_search)
+            <div class="col-md-2 mb-2">
+                <a href="{{ route('invoices.index', array_merge(request()->except(['client_search', 'page']))) }}" class="btn btn-secondary">Limpiar búsqueda</a>
+            </div>
+            @endif
+        </div>
+    </form>
 
 <div class="table-responsive">
     <table class="table table-striped">
@@ -55,6 +74,7 @@
             <tr>
                 <th>Estado</th>
                 <th>Cliente</th>
+                <th>CUIL</th>
                 <th>Direccion</th>
                 <th>Precio</th>
                 <th>Fecha de creación</th>
@@ -69,6 +89,7 @@
             <tr>
                 <td>{{ $invoice->getNameStatus() }}</td>
                 <td>{{ $invoice->client->name }}</td>
+                <td>{{ $invoice->client->cuil }}</td>
                 <td>{{ $invoice->client->address }}</td>
                 <td>{{ $invoice->price }}</td>
                 <td>{{ date("Y-m-d", strtotime($invoice->created_at)) }}</td>
@@ -96,7 +117,13 @@
     </table>
 </div>
 
-{{ $invoices->links('pagination::bootstrap-4') }}
+@if(isset($client_search) && $client_search)
+    <div class="alert alert-info mt-3">
+        Mostrando todos los resultados para la búsqueda "{{ $client_search }}". Total: {{ count($invoices) }} factura(s).
+    </div>
+@else
+    {{ $invoices->links('pagination::bootstrap-4') }}
+@endif
 
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -170,22 +197,6 @@ function setLastYear() {
     document.getElementById('date_to').value = today.toISOString().split('T')[0];
 }
 
-document.getElementById('searchInvoices').addEventListener('keyup', function() {
-    let filter = this.value.toUpperCase();
-    let rows = document.getElementById('invoiceTable').getElementsByTagName('tr');
-
-    for (let i = 0; i < rows.length; i++) {
-        let tdClient = rows[i].getElementsByTagName('td')[1];
-        if (tdClient) {
-            let txtValueClient = tdClient.textContent || tdClient.innerText;
-            if (txtValueClient.toUpperCase().indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }       
-    }
-});
 document.querySelectorAll('.open-payment-modal').forEach(button => {
     button.addEventListener('click', function () {
         let invoiceId = this.getAttribute('data-invoice-id');

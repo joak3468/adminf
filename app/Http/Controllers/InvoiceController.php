@@ -13,10 +13,25 @@ class InvoiceController extends Controller {
     }
 
     public function index(Request $request) {
+        \Log::info('=== INVOICE INDEX REQUEST ===');
+        \Log::info('All request data:', $request->all());
+        \Log::info('date_from input:', ['value' => $request->input('date_from')]);
+        \Log::info('date_to input:', ['value' => $request->input('date_to')]);
+        \Log::info('client_search input:', ['value' => $request->input('client_search')]);
+        \Log::info('status input:', ['value' => $request->input('status')]);
+        
         $date_from = $request->input('date_from', date("Y-m-d", strtotime("-1 month")));
         $date_to   = $request->input('date_to', date("Y-m-d"));
         $client_search = $request->input('client_search', '');
         $enabled_statuses = isset($request->status) ? $request->status : [0,1,3];
+        
+        \Log::info('After processing:', [
+            'date_from' => $date_from,
+            'date_to' => $date_to,
+            'client_search' => $client_search,
+            'enabled_statuses' => $enabled_statuses
+        ]);
+        
         if(in_array(1, $enabled_statuses))
             $enabled_statuses[] = 2;
         

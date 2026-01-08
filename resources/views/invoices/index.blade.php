@@ -87,17 +87,10 @@
         </div>
     </form>
 
-    <form method="GET" action="{{ route('invoices.index') }}" class="mb-4" id="clientSearchForm" onsubmit="updateSearchFormDates(this);">
+    <form method="GET" action="{{ route('invoices.index') }}" class="mb-4" id="clientSearchForm" onsubmit="return updateSearchFormDates(this);">
         <div class="row">
             <div class="col-md-8 mb-2">
                 <input type="text" name="client_search" id="client_search" class="form-control" placeholder="Buscar por nombre o CUIL del cliente" value="{{ $client_search ?? '' }}">
-                <input type="hidden" name="date_from" id="search_date_from" value="{{ $date_from }}">
-                <input type="hidden" name="date_to" id="search_date_to" value="{{ $date_to }}">
-                @if(isset(request()->status))
-                    @foreach(request()->status as $status)
-                        <input type="hidden" name="status[]" class="search_status" value="{{ $status }}">
-                    @endforeach
-                @endif
             </div>
             <div class="col-md-2 mb-2">
                 <button type="submit" class="btn btn-primary">Buscar</button>
@@ -256,27 +249,44 @@ document.getElementById('confirmPayment').addEventListener('click', function () 
 
 // Función para actualizar las fechas en el formulario de búsqueda antes de enviarlo
 function updateSearchFormDates(form) {
-    // Obtener los valores actuales de los inputs de fecha
+    // Obtener los valores actuales de los inputs de fecha del formulario de filtros
     let dateFromInput = document.getElementById('date_from');
     let dateToInput = document.getElementById('date_to');
     
-    if (dateFromInput && dateToInput) {
-        let dateFrom = dateFromInput.value;
-        let dateTo = dateToInput.value;
-        
-        // Actualizar los campos ocultos del formulario de búsqueda
-        let searchDateFrom = document.getElementById('search_date_from');
-        let searchDateTo = document.getElementById('search_date_to');
-        
-        if (searchDateFrom) searchDateFrom.value = dateFrom;
-        if (searchDateTo) searchDateTo.value = dateTo;
+    // Crear o actualizar los campos ocultos de fecha
+    let dateFromHidden = document.getElementById('search_date_from');
+    let dateToHidden = document.getElementById('search_date_to');
+    
+    if (!dateFromHidden) {
+        dateFromHidden = document.createElement('input');
+        dateFromHidden.type = 'hidden';
+        dateFromHidden.name = 'date_from';
+        dateFromHidden.id = 'search_date_from';
+        form.appendChild(dateFromHidden);
+    }
+    
+    if (!dateToHidden) {
+        dateToHidden = document.createElement('input');
+        dateToHidden.type = 'hidden';
+        dateToHidden.name = 'date_to';
+        dateToHidden.id = 'search_date_to';
+        form.appendChild(dateToHidden);
+    }
+    
+    // Actualizar los valores desde los inputs de fecha del formulario de filtros
+    if (dateFromInput && dateFromInput.value) {
+        dateFromHidden.value = dateFromInput.value;
+    }
+    
+    if (dateToInput && dateToInput.value) {
+        dateToHidden.value = dateToInput.value;
     }
     
     // Obtener los checkboxes de status seleccionados
     let statusCheckboxes = document.querySelectorAll('input[name="status[]"]:checked');
-    let statusInputs = document.querySelectorAll('.search_status');
     
     // Eliminar los inputs de status existentes
+    let statusInputs = document.querySelectorAll('input[name="status[]"].search_status');
     statusInputs.forEach(input => input.remove());
     
     // Agregar nuevos inputs de status con los valores actuales

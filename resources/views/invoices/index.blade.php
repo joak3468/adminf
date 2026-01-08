@@ -87,7 +87,7 @@
         </div>
     </form>
 
-    <form method="GET" action="{{ route('invoices.index') }}" class="mb-4" id="clientSearchForm">
+    <form method="GET" action="{{ route('invoices.index') }}" class="mb-4" id="clientSearchForm" onsubmit="updateSearchFormDates(this);">
         <div class="row">
             <div class="col-md-8 mb-2">
                 <input type="text" name="client_search" id="client_search" class="form-control" placeholder="Buscar por nombre o CUIL del cliente" value="{{ $client_search ?? '' }}">
@@ -254,15 +254,23 @@ document.getElementById('confirmPayment').addEventListener('click', function () 
     document.getElementById('paymentForm').submit();
 });
 
-// Actualizar valores de fecha y status cuando se envía el formulario de búsqueda
-document.getElementById('clientSearchForm').addEventListener('submit', function(e) {
+// Función para actualizar las fechas en el formulario de búsqueda antes de enviarlo
+function updateSearchFormDates(form) {
     // Obtener los valores actuales de los inputs de fecha
-    let dateFrom = document.getElementById('date_from').value;
-    let dateTo = document.getElementById('date_to').value;
+    let dateFromInput = document.getElementById('date_from');
+    let dateToInput = document.getElementById('date_to');
     
-    // Actualizar los campos ocultos del formulario de búsqueda
-    document.getElementById('search_date_from').value = dateFrom;
-    document.getElementById('search_date_to').value = dateTo;
+    if (dateFromInput && dateToInput) {
+        let dateFrom = dateFromInput.value;
+        let dateTo = dateToInput.value;
+        
+        // Actualizar los campos ocultos del formulario de búsqueda
+        let searchDateFrom = document.getElementById('search_date_from');
+        let searchDateTo = document.getElementById('search_date_to');
+        
+        if (searchDateFrom) searchDateFrom.value = dateFrom;
+        if (searchDateTo) searchDateTo.value = dateTo;
+    }
     
     // Obtener los checkboxes de status seleccionados
     let statusCheckboxes = document.querySelectorAll('input[name="status[]"]:checked');
@@ -278,9 +286,11 @@ document.getElementById('clientSearchForm').addEventListener('submit', function(
         hiddenInput.name = 'status[]';
         hiddenInput.className = 'search_status';
         hiddenInput.value = checkbox.value;
-        this.appendChild(hiddenInput);
+        form.appendChild(hiddenInput);
     });
-});
+    
+    return true;
+}
 </component>
 
 </div>

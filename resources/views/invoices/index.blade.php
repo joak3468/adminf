@@ -2,27 +2,48 @@
 
 @section('content')
 <style>
-    .invoices-page-wrapper {
+    body {
         position: relative;
         min-height: 100vh;
-        background-image: url('https://images.unsplash.com/photo-1585842378054-ee8e30be8c80?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+    }
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('https://images.unsplash.com/photo-1585842378054-ee8e30be8c80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         background-repeat: no-repeat;
-        padding: 20px 0;
+        opacity: 0.35;
+        z-index: 0;
+        pointer-events: none;
     }
-    .invoices-content {
+    #app {
         position: relative;
-        background-color: rgba(255, 255, 255, 0.95);
+        z-index: 1;
+    }
+    main {
+        background-color: transparent !important;
+        position: relative;
+        z-index: 1;
+    }
+    .invoices-content-wrapper {
+        background-color: rgba(255, 255, 255, 0.85);
         padding: 30px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        position: relative;
+        z-index: 1;
     }
 </style>
 
-<div class="invoices-page-wrapper">
-<div class="container mt-5 invoices-content">
+<div class="container mt-5">
+<div class="invoices-content-wrapper">
     <h1 class="mb-4">Listado de Facturas</h1>
 
     <!-- Filtro de facturas -->

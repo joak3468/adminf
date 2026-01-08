@@ -249,16 +249,35 @@ document.getElementById('confirmPayment').addEventListener('click', function () 
 
 // Configurar el formulario de búsqueda para que incluya las fechas actuales
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded ejecutado');
+    
     let searchForm = document.getElementById('clientSearchForm');
     let searchButton = document.getElementById('searchButton');
+    
+    console.log('searchForm:', searchForm);
+    console.log('searchButton:', searchButton);
     
     if (searchForm && searchButton) {
         searchButton.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('Botón Buscar clickeado');
             
             // Obtener los valores actuales de los inputs de fecha del formulario de filtros
             let dateFromInput = document.getElementById('date_from');
             let dateToInput = document.getElementById('date_to');
+            
+            console.log('dateFromInput encontrado:', dateFromInput);
+            console.log('dateToInput encontrado:', dateToInput);
+            
+            if (dateFromInput) {
+                console.log('Valor de dateFromInput.value:', dateFromInput.value);
+                console.log('Valor de dateFromInput.getAttribute("value"):', dateFromInput.getAttribute('value'));
+            }
+            
+            if (dateToInput) {
+                console.log('Valor de dateToInput.value:', dateToInput.value);
+                console.log('Valor de dateToInput.getAttribute("value"):', dateToInput.getAttribute('value'));
+            }
             
             // Crear o actualizar los campos ocultos de fecha
             let dateFromHidden = document.getElementById('search_date_from');
@@ -270,6 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 dateFromHidden.name = 'date_from';
                 dateFromHidden.id = 'search_date_from';
                 searchForm.appendChild(dateFromHidden);
+                console.log('Campo oculto date_from creado');
             }
             
             if (!dateToHidden) {
@@ -278,19 +298,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 dateToHidden.name = 'date_to';
                 dateToHidden.id = 'search_date_to';
                 searchForm.appendChild(dateToHidden);
+                console.log('Campo oculto date_to creado');
             }
             
             // Actualizar los valores desde los inputs de fecha del formulario de filtros
-            if (dateFromInput && dateFromInput.value) {
-                dateFromHidden.value = dateFromInput.value;
+            if (dateFromInput) {
+                let dateFromValue = dateFromInput.value || dateFromInput.getAttribute('value');
+                if (dateFromValue) {
+                    dateFromHidden.value = dateFromValue;
+                    console.log('dateFromHidden.value seteado a:', dateFromValue);
+                } else {
+                    console.log('WARNING: dateFromInput no tiene valor');
+                }
             }
             
-            if (dateToInput && dateToInput.value) {
-                dateToHidden.value = dateToInput.value;
+            if (dateToInput) {
+                let dateToValue = dateToInput.value || dateToInput.getAttribute('value');
+                if (dateToValue) {
+                    dateToHidden.value = dateToValue;
+                    console.log('dateToHidden.value seteado a:', dateToValue);
+                } else {
+                    console.log('WARNING: dateToInput no tiene valor');
+                }
             }
+            
+            // Verificar valores finales antes de enviar
+            console.log('Valores finales en el formulario antes de enviar:');
+            console.log('dateFromHidden.value:', dateFromHidden.value);
+            console.log('dateToHidden.value:', dateToHidden.value);
             
             // Obtener los checkboxes de status seleccionados
             let statusCheckboxes = document.querySelectorAll('input[name="status[]"]:checked');
+            console.log('Status checkboxes seleccionados:', statusCheckboxes.length);
             
             // Eliminar los inputs de status existentes del formulario de búsqueda
             let statusInputs = searchForm.querySelectorAll('input[name="status[]"]');
@@ -305,9 +344,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchForm.appendChild(hiddenInput);
             });
             
+            // Mostrar el formulario completo antes de enviar
+            let formData = new FormData(searchForm);
+            console.log('FormData antes de enviar:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
+            }
+            
             // Enviar el formulario
+            console.log('Enviando formulario...');
             searchForm.submit();
         });
+    } else {
+        console.log('ERROR: No se encontraron searchForm o searchButton');
     }
 });
 </component>

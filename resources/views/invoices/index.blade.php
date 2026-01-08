@@ -87,15 +87,15 @@
         </div>
     </form>
 
-    <form method="GET" action="{{ route('invoices.index') }}" class="mb-4">
+    <form method="GET" action="{{ route('invoices.index') }}" class="mb-4" id="clientSearchForm">
         <div class="row">
             <div class="col-md-8 mb-2">
                 <input type="text" name="client_search" id="client_search" class="form-control" placeholder="Buscar por nombre o CUIL del cliente" value="{{ $client_search ?? '' }}">
-                <input type="hidden" name="date_from" value="{{ $date_from }}">
-                <input type="hidden" name="date_to" value="{{ $date_to }}">
+                <input type="hidden" name="date_from" id="search_date_from" value="{{ $date_from }}">
+                <input type="hidden" name="date_to" id="search_date_to" value="{{ $date_to }}">
                 @if(isset(request()->status))
                     @foreach(request()->status as $status)
-                        <input type="hidden" name="status[]" value="{{ $status }}">
+                        <input type="hidden" name="status[]" class="search_status" value="{{ $status }}">
                     @endforeach
                 @endif
             </div>
@@ -252,6 +252,34 @@ document.querySelectorAll('.open-payment-modal').forEach(button => {
 
 document.getElementById('confirmPayment').addEventListener('click', function () {
     document.getElementById('paymentForm').submit();
+});
+
+// Actualizar valores de fecha y status cuando se envía el formulario de búsqueda
+document.getElementById('clientSearchForm').addEventListener('submit', function(e) {
+    // Obtener los valores actuales de los inputs de fecha
+    let dateFrom = document.getElementById('date_from').value;
+    let dateTo = document.getElementById('date_to').value;
+    
+    // Actualizar los campos ocultos del formulario de búsqueda
+    document.getElementById('search_date_from').value = dateFrom;
+    document.getElementById('search_date_to').value = dateTo;
+    
+    // Obtener los checkboxes de status seleccionados
+    let statusCheckboxes = document.querySelectorAll('input[name="status[]"]:checked');
+    let statusInputs = document.querySelectorAll('.search_status');
+    
+    // Eliminar los inputs de status existentes
+    statusInputs.forEach(input => input.remove());
+    
+    // Agregar nuevos inputs de status con los valores actuales
+    statusCheckboxes.forEach(checkbox => {
+        let hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'status[]';
+        hiddenInput.className = 'search_status';
+        hiddenInput.value = checkbox.value;
+        this.appendChild(hiddenInput);
+    });
 });
 </component>
 

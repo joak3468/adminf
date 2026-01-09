@@ -73,8 +73,9 @@ class InvoiceController extends Controller {
             $data['payment_method'] = $request->method;
         }
         
-        // Si se retrocede desde status Pagada (3) a Enviada (2), poner fecha de pago en null
-        if($request->has('newStatus') && $invoice->status == 3 && $request->newStatus == 2) {
+        // Si se retrocede desde status Pagada (3), poner status en 0 y fecha de pago en null
+        if($request->has('newStatus') && $invoice->status == 3) {
+            $data['status'] = 0;
             $data['payment_date'] = null;
             $data['payment_method'] = null;
         }

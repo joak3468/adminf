@@ -93,7 +93,7 @@
                 <input type="text" name="client_search" id="client_search" class="form-control" placeholder="Buscar por nombre o CUIL del cliente" value="{{ $client_search ?? '' }}">
             </div>
             <div class="col-md-2 mb-2">
-                <button type="submit" class="btn btn-primary" id="searchButton">Buscar</button>
+                    <button type="submit" class="btn btn-primary" id="searchButton">Buscar</button>
             </div>
             @if(isset($client_search) && $client_search)
             <div class="col-md-2 mb-2">
@@ -232,19 +232,37 @@ function setLastYear() {
     document.getElementById('date_to').value = today.toISOString().split('T')[0];
 }
 
-document.querySelectorAll('.open-payment-modal').forEach(button => {
-    button.addEventListener('click', function () {
-        let invoiceId = this.getAttribute('data-invoice-id');
-        let clientName = this.getAttribute('data-client-name');
-        let createdAt = this.getAttribute('data-created-at');
-        document.getElementById('paymentModalLabel').textContent = `Confirmar Fecha de Pago para ${clientName}`;
-        let form = document.getElementById('paymentForm');
-        form.action = `{{ route('invoices.update', ':id') }}`.replace(':id', invoiceId);
+// Configurar el modal de pago
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar los botones que abren el modal
+    document.querySelectorAll('.open-payment-modal').forEach(button => {
+        button.addEventListener('click', function () {
+            let invoiceId = this.getAttribute('data-invoice-id');
+            let clientName = this.getAttribute('data-client-name');
+            let createdAt = this.getAttribute('data-created-at');
+            document.getElementById('paymentModalLabel').textContent = `Confirmar Fecha de Pago para ${clientName}`;
+            let form = document.getElementById('paymentForm');
+            form.action = `{{ route('invoices.update', ':id') }}`.replace(':id', invoiceId);
+        });
     });
-});
-
-document.getElementById('confirmPayment').addEventListener('click', function () {
-    document.getElementById('paymentForm').submit();
+    
+    // Configurar el botón de confirmar pago
+    let confirmPaymentButton = document.getElementById('confirmPayment');
+    if (confirmPaymentButton) {
+        confirmPaymentButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            let form = document.getElementById('paymentForm');
+            if (form) {
+                // Validar que la fecha esté completa
+                let paymentDate = document.getElementById('paymentDate');
+                if (paymentDate && paymentDate.value) {
+                    form.submit();
+                } else {
+                    alert('Por favor, seleccione una fecha de pago');
+                }
+            }
+        });
+    }
 });
 
 // Configurar el formulario de búsqueda para que incluya las fechas actuales
